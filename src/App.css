@@ -1,0 +1,12 @@
+h1 {
+  text-align: center;
+}
+
+.mt-8 {
+  margin-top: 2rem;
+}
+
+.u-container {
+  max-width: 960px;
+  margin: 0 auto;
+}
