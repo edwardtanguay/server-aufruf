@@ -59,8 +59,7 @@ function App() {
     return (
         <div className="u-container">
             <h1>Restegourmet</h1>
-            <Search handleSubmit={handleSubmit} handleChange={handleChange} />[
-            {inputValue}]
+        <Search handleSubmit={handleSubmit} handleChange={handleChange} />
             {gerichte && (
                 <>
                     {gerichte.map((gericht, index) => {
