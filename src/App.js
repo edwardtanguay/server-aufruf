@@ -5,7 +5,7 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
 import Zutaten from './components/Zutaten';
 import Search from './components/Search';
-// import axios from 'axios';
+import axios from 'axios';
 
 const url = 'http://localhost:3001/';
 
@@ -19,27 +19,29 @@ function App() {
     //     const getGerichte = async () => {
     //         const res = await fetch(url);
     //         const json = await res.json();
-    //         console.log(json.gerichte);
-    //         setGerichte(json.gerichte);
+    //         const _gerichte = json.gerichte;
+    //         console.log(_gerichte);
+    //         setGerichte(_gerichte);
     //     };
     //     getGerichte();
     // }, []);
 
     // WORKS WITH FETCH
-    useEffect(() => {
-        (async () => {
-            const response = await fetch(url);
-            const _gerichte = await response.json();
-            setGerichte(_gerichte);
-        })();
-    }, []);
-
-    // WORKS WITH AXIOS:
     // useEffect(() => {
     //     (async () => {
-    //         setGerichte((await axios.get(url)).data);
+    //         const response = await fetch(url);
+    //         const _gerichte = await response.json();
+    //       console.log(_gerichte);
+    //         setGerichte(_gerichte);
     //     })();
     // }, []);
+
+    // WORKS WITH AXIOS:
+    useEffect(() => {
+        (async () => {
+            setGerichte((await axios.get(url)).data);
+        })();
+    }, []);
 
     /*   useEffect(() => {
     const result = gerichte.filter((gericht) => {
@@ -59,13 +61,15 @@ function App() {
     return (
         <div className="u-container">
             <h1>Restegourmet</h1>
-        <Search handleSubmit={handleSubmit} handleChange={handleChange} />
+            <Search handleSubmit={handleSubmit} handleChange={handleChange} />
             {gerichte && (
                 <>
                     {gerichte.map((gericht, index) => {
                         return (
                             <>
-                                {gericht.name.toLowerCase().includes(inputValue.toLowerCase()) && (
+                                {gericht.name
+                                    .toLowerCase()
+                                    .includes(inputValue.toLowerCase()) && (
                                     <Card
                                         key={index}
                                         style={{ width: '18rem' }}
