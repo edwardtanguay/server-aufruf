@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useState, useEffect } from 'react';
 import Card from 'react-bootstrap/Card';
 import ListGroup from 'react-bootstrap/ListGroup';
@@ -11,6 +12,7 @@ const url = 'http://localhost:3001/';
 
 function App() {
     const [gerichte, setGerichte] = useState([]);
+    const [filteredGerichte, setFilteredGerichte] = useState([]);
     // const [searchItems, setSearchItems] = useState([]);
     const [inputValue, setInputValue] = useState('');
 
@@ -36,21 +38,43 @@ function App() {
     //     })();
     // }, []);
 
+    const filterGerichte = () => {
+			let _filteredGerichte = [];
+			if (inputValue === '') {
+				_filteredGerichte = gerichte;
+			} else {
+        _filteredGerichte = gerichte.filter((m) =>
+            m.name.toLowerCase().includes(inputValue.toLowerCase())
+        );
+			}
+        setFilteredGerichte(_filteredGerichte);
+    };
+
     // WORKS WITH AXIOS:
     useEffect(() => {
         (async () => {
-            setGerichte((await axios.get(url)).data);
+            const _gerichte = (await axios.get(url)).data;
+            setGerichte(_gerichte);
         })();
     }, []);
 
+    useEffect(() => {
+        filterGerichte();
+    }, [gerichte]);
+
+    useEffect(() => {
+        filterGerichte();
+    }, [inputValue]);
+
     /*   useEffect(() => {
-    const result = gerichte.filter((gericht) => {
-      return gericht.zutaten;
-    })
-  }, [searchItems]) */
+		const result = gerichte.filter((gericht) => {
+			return gericht.zutaten;
+		})
+	}, [searchItems]) */
 
     const handleChange = (e) => {
         setInputValue(e.target.value);
+        filterGerichte();
     };
 
     const handleSubmit = (e) => {
@@ -61,41 +85,39 @@ function App() {
     return (
         <div className="u-container">
             <h1>Restegourmet</h1>
-            <Search handleSubmit={handleSubmit} handleChange={handleChange} />
-            {gerichte && (
+
+            {filteredGerichte.length === 0 ? (
+                <p>Loading...</p>
+            ) : (
                 <>
-                    {gerichte.map((gericht, index) => {
+                    <Search
+                        handleSubmit={handleSubmit}
+                        handleChange={handleChange}
+                    />
+                    {filteredGerichte.map((gericht, index) => {
                         return (
                             <>
-                                {gericht.name
-                                    .toLowerCase()
-                                    .includes(inputValue.toLowerCase()) && (
-                                    <Card
-                                        key={index}
-                                        style={{ width: '18rem' }}
-                                        className="mt-8"
-                                    >
-                                        <Card.Img
-                                            variant="top"
-                                            src={`../../img/${index}.jpeg`}
-                                        />
-                                        <Card.Body key={200}>
-                                            <Card.Title>
-                                                {gericht.name}
-                                            </Card.Title>
-                                        </Card.Body>
-                                        <ListGroup className="list-group-flush">
-                                            <Zutaten
-                                                zutaten={gericht.zutaten}
-                                            />
-                                        </ListGroup>
-                                        <Card.Body key={201}>
-                                            <Card.Link href="#">
-                                                Zur Zubereitung
-                                            </Card.Link>
-                                        </Card.Body>
-                                    </Card>
-                                )}
+                                <Card
+                                    key={index}
+                                    style={{ width: '18rem' }}
+                                    className="mt-8"
+                                >
+                                    <Card.Img
+                                        variant="top"
+                                        src={`../../img/${gericht.id}.jpeg`}
+                                    />
+                                    <Card.Body key={200}>
+                                        <Card.Title>{gericht.name}</Card.Title>
+                                    </Card.Body>
+                                    <ListGroup className="list-group-flush">
+                                        <Zutaten zutaten={gericht.zutaten} />
+                                    </ListGroup>
+                                    <Card.Body key={201}>
+                                        <Card.Link href="#">
+                                            Zur Zubereitung
+                                        </Card.Link>
+                                    </Card.Body>
+                                </Card>
                             </>
                         );
                     })}

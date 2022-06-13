@@ -15,7 +15,7 @@ const Search = ({handleSubmit, handleChange}) => {
           aria-label="Search"
           onChange={handleChange}
         />
-        <Button type='submit' variant="outline-success">Search</Button>
+        {/* <Button type='submit' variant="outline-success">Search</Button> */}
       </Form>
     </Fragment>
   )
